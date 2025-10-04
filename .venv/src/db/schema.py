@@ -5,20 +5,24 @@ def create_job_ads_table():
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS job_ads (
-        ID integer PRIMARY KEY AUTOINCREMENT,
-        RawTitle text NOT NULL,
-        Company text NOT NULL,
-        Location text NOT NULL,
-        Salary text,
-        ExperienceYears real,
-        Education text,
-        Link text,
-        Description text NOT NULL,
-        DatePosted date NOT NULL,
-        Source text NOT NULL,
-        Status text CHECK(status IN ('success', 'declined', 'irrelevant', 'waiting')),
-        Progress text,
-        CONSTRAINT job UNIQUE (Link, Description)
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title_raw TEXT NOT NULL,
+        title_normal INTEGER NOT NULL,
+        title_seniority TEXT CHECK(status IN ('Junior', 'Middle', 'Senior')),
+        title_stack TEXT,
+        company TEXT NOT NULL,
+        location TEXT NOT NULL,
+        salary TEXT,
+        experience_years REAL,
+        education TEXT,
+        url TEXT,
+        description TEXT NOT NULL,
+        date_posted DATE NOT NULL,
+        source TEXT NOT NULL,
+        status TEXT CHECK(status IN ('Success', 'Declined', 'Irrelevant', 'Waiting')),
+        progress TEXT,
+        FOREIGN KEY (title_normal) REFERENCES jobs_normal(id),
+        CONSTRAINT ad UNIQUE (url, description)
     )
     """)
     conn.commit()
@@ -30,8 +34,8 @@ def create_skills_table():
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS skills (
-        ID integer PRIMARY KEY AUTOINCREMENT,
-        name text NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
         UNIQUE (name)
     )
     """)
@@ -44,12 +48,12 @@ def create_jobad_skill_table():
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS link_jobad_skill (
-        JobAdID integer,
-        SkillID integer,
-        Type text CHECK(type IN ('required', 'bonus')) DEFAULT 'required',
-        FOREIGN KEY (JobAdID) REFERENCES job_ads(ID),
-        FOREIGN KEY (SkillID) REFERENCES skills(ID),
-        CONSTRAINT unique_link UNIQUE (JobAdID, SkillID)
+        job_ad_id INTEGER,
+        skill_id INTEGER,
+        type TEXT CHECK(type IN ('required', 'bonus')) DEFAULT 'required',
+        FOREIGN KEY (job_ad_id) REFERENCES job_ads(id),
+        FOREIGN KEY (skill_id) REFERENCES skills(id),
+        CONSTRAINT unique_link UNIQUE (job_ad_id, skill_id)
     )
     """)
     conn.commit()
@@ -61,8 +65,8 @@ def create_jobs_norm_table():
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS jobs_normal (
-        ID integer PRIMARY KEY AUTOINCREMENT,
-        Name text NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
         UNIQUE (name)
     )
     """)

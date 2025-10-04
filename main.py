@@ -5,11 +5,22 @@ if __name__ == '__main__':
     conn = sqlite3.connect("jobs.db")
     cursor = conn.cursor()
     cursor.execute("""
-        ALTER TABLE job_ads
-        ADD FOREIGN KEY (JobNormalized) REFERENCE jobs_normal(ID)
-        """)
+        INSERT INTO job_ads (title_raw, title_normal, title_seniority, title_stack, company, location, salary, experience_years, description, date_posted, source, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+        "Junior Frontend React разработчик",
+        1,
+        "Junior",
+        "React",
+        "Аматранс",
+        "offline, Kazakhstan, Almaty",
+        "50000 - 100000 KZT",
+        0,
+        "Должность: Junior Frontend React разработчик\nКомпания: Амантранс\nhttps://amantrans.com.kz/\nГород: Алматы\nЗанятость: оффлайн\nОплата: от 50 000 до 100 000\nМы логистическая компания у которой крупные международные проекты.\nОписание вакансии:\nРазработка программного обеспечения на JS с использованием фреймворка React.\nТестирование и отладка кода, участие в ревью кода.\nСотрудничество с командой разработчиков для реализации проектных задач.\nЗнание языка программирования JS и основ работы с фреймворком React.\nУмение работать с системами контроля версий (например, Git).\nЖелание учиться и развиваться в области программирования.\nПонимание основ системного анализа и проектирования.\nУмение анализировать и структурировать информацию.\nЖелание учиться и развиваться в области аналитики и управления проектами.\n\nПрактический опыт работы над реальными проектами.\nНаставничество от опытных специалистов.\nПерспективы дальнейшего трудоустройства после успешной стажировки.\nКонтакты:\nTelegram @aman_it",
+        "2025-09-25",
+        "t.me / workitkz",
+        "Irrelevant"
+    ))
     conn.commit()
     conn.close()
-    print("table is modified.")
-
-
+    print("done")
