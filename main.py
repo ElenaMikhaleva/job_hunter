@@ -1,26 +1,28 @@
+from src.backend.db.schema import *
+from src.backend.parser_hh import *
 
-from src.db.schema import *
 
-if __name__ == '__main__':
+def tables_drop_create():
     conn = sqlite3.connect("jobs.db")
     cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO job_ads (title_raw, title_normal, title_seniority, title_stack, company, location, salary, experience_years, description, date_posted, source, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-        "Junior Frontend React разработчик",
-        1,
-        "Junior",
-        "React",
-        "Аматранс",
-        "offline, Kazakhstan, Almaty",
-        "50000 - 100000 KZT",
-        0,
-        "Должность: Junior Frontend React разработчик\nКомпания: Амантранс\nhttps://amantrans.com.kz/\nГород: Алматы\nЗанятость: оффлайн\nОплата: от 50 000 до 100 000\nМы логистическая компания у которой крупные международные проекты.\nОписание вакансии:\nРазработка программного обеспечения на JS с использованием фреймворка React.\nТестирование и отладка кода, участие в ревью кода.\nСотрудничество с командой разработчиков для реализации проектных задач.\nЗнание языка программирования JS и основ работы с фреймворком React.\nУмение работать с системами контроля версий (например, Git).\nЖелание учиться и развиваться в области программирования.\nПонимание основ системного анализа и проектирования.\nУмение анализировать и структурировать информацию.\nЖелание учиться и развиваться в области аналитики и управления проектами.\n\nПрактический опыт работы над реальными проектами.\nНаставничество от опытных специалистов.\nПерспективы дальнейшего трудоустройства после успешной стажировки.\nКонтакты:\nTelegram @aman_it",
-        "2025-09-25",
-        "t.me / workitkz",
-        "Irrelevant"
-    ))
+    cursor.execute("DROP TABLE IF EXISTS job_ads")
+    conn.commit()
+    cursor.execute("DROP TABLE IF EXISTS skills")
+    conn.commit()
+    cursor.execute("DROP TABLE IF EXISTS link_jobad_skill")
+    conn.commit()
+    cursor.execute("DROP TABLE IF EXISTS jobs_normal")
     conn.commit()
     conn.close()
+    create_skills_table()
+    create_jobad_skill_table()
+    create_job_ads_table()
+    create_formats_table()
+    create_jobad_format_table()
+
+
+if __name__ == '__main__':
+    # tables_drop_create()
+    fetch_hh_jobs(query="qa", pages=1)
     print("done")
+

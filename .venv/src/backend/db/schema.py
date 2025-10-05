@@ -7,13 +7,11 @@ def create_job_ads_table():
     CREATE TABLE IF NOT EXISTS job_ads (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title_raw TEXT NOT NULL,
-        title_normal INTEGER NOT NULL,
-        title_seniority TEXT CHECK(status IN ('Junior', 'Middle', 'Senior')),
-        title_stack TEXT,
         company TEXT NOT NULL,
+        schedule TEXT CHECK(status IN ('Full time', 'Part time')),
         location TEXT NOT NULL,
         salary TEXT,
-        experience_years REAL,
+        experience_min REAL,
         education TEXT,
         url TEXT,
         description TEXT NOT NULL,
@@ -21,7 +19,6 @@ def create_job_ads_table():
         source TEXT NOT NULL,
         status TEXT CHECK(status IN ('Success', 'Declined', 'Irrelevant', 'Waiting')),
         progress TEXT,
-        FOREIGN KEY (title_normal) REFERENCES jobs_normal(id),
         CONSTRAINT ad UNIQUE (url, description)
     )
     """)
@@ -60,11 +57,11 @@ def create_jobad_skill_table():
     conn.close()
     print("link table job ad + skill is created.")
 
-def create_jobs_norm_table():
+def create_formats_table():
     conn = sqlite3.connect("jobs.db")
     cursor = conn.cursor()
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS jobs_normal (
+    CREATE TABLE IF NOT EXISTS formats (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         UNIQUE (name)
@@ -72,4 +69,20 @@ def create_jobs_norm_table():
     """)
     conn.commit()
     conn.close()
-    print("normalized jobs table is created.")
+    print("formats table is created.")
+
+def create_jobad_format_table():
+    conn = sqlite3.connect("jobs.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS link_jobad_format (
+        job_ad_id INTEGER,
+        format_id INTEGER,
+        FOREIGN KEY (job_ad_id) REFERENCES job_ads(id),
+        FOREIGN KEY (format_id) REFERENCES formats(id),
+        CONSTRAINT unique_link UNIQUE (job_ad_id, format_id)
+    )
+    """)
+    conn.commit()
+    conn.close()
+    print("link table job ad + format is created.")

@@ -14,17 +14,16 @@ def fetch_remoteok_jobs():
         data = response.json()
         jobs = data[1:]
 
-        keywords = ["qa", "test", "quality", "testing"]
-
         for job in jobs:
             searchable_text = f"{job.get('position', '')} {job.get('company', '')} {job.get('location', '')} {' '.join(job.get('tags', []))}".lower()
-            if any(k in searchable_text for k in keywords):
-                print(f"Position: {job.get('position')}")
-                print(f"Company: {job.get('company')}")
-                print(f"Location: {job.get('location')}")
-                print(f"Tags: {job.get('tags')}")
-                print(f"URL: {job.get('url')}")
-                print("-" * 10)
+            print(f"Position: {job.get('position')}")
+            print(f"Company: {job.get('company')}")
+            print(f"Location: {job.get('location')}")
+            print(f"Tags: {job.get('tags')}")
+            print(f"URL: {job.get('url')}")
+            print("-" * 10)
+
+        return jobs
     else:
         print(f"Failed to fetch jobs: HTTP {response.status_code}")
 
